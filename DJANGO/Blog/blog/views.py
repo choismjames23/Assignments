@@ -33,7 +33,8 @@ def blog_list(request):
 
     context = {
         #'blogs': blogs,
-        'page_object': page_object,
+        'page_obj': page_object,
+        'object_list': page_object.object_list,
         # 'count' : request.session['count']
     }
     response = render(request, template_name='blog_list.html', context=context)
@@ -57,7 +58,7 @@ def blog_create(request):
         blog.author = request.user     # 현재 로그인한 유저의 이름을 author에 저장
         blog.save()
         # author_id를 pk로 넘겨주기 위해 keyword argument로 딕녀서리를 넘겨줌
-        return redirect(reverse('blog_detail',kwargs={'pk': blog.pk}))
+        return redirect(reverse('fb:detail',kwargs={'pk': blog.pk}))
 
 
     context = {'form':form}
@@ -72,7 +73,7 @@ def blog_update(request, pk):
     form = BlogForm(request.POST or None, instance=blog)
     if form.is_valid():
         blog = form.save()
-        return redirect(reverse('blog_detail', kwargs={'pk': blog.pk}))
+        return redirect(reverse('fb:detail', kwargs={'pk': blog.pk}))
 
     context = {
         'form': form,
@@ -88,4 +89,4 @@ def blog_delete(request, pk):
     blog = get_object_or_404(Blog, pk=pk, author=request.user)
     blog.delete()
 
-    return redirect(reverse('blog_list'))
+    return redirect(reverse('fb:list'))

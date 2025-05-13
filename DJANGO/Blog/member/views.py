@@ -41,7 +41,7 @@ def login(request):
         if next:
             return redirect(next)
 
-        return redirect(reverse('blog_list'))
+        return redirect(reverse('blog:list'))
 
     context = {
         'form' : form

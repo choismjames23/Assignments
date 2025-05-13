@@ -1,6 +1,7 @@
 from django.db import models
 # from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -11,7 +12,7 @@ class Blog(models.Model):
         ('cat', '고양이'),
         ('dog', '강아지'),
     )
-    category = models.CharField('카테고리', max_length=10, choices=CATEGORY_CHOICES)
+    category = models.CharField('카테고리', max_length=10, choices=CATEGORY_CHOICES, default='free')
     title = models.CharField('제목', max_length=100)
     content = models.TextField('본문')
 
@@ -25,6 +26,9 @@ class Blog(models.Model):
 
     def __str__(self):
         return f'[{self.get_category_display()}] {self.title[:10]}'
+
+    def get_absolute_url(self):
+        return reverse(viewname='blog:detail', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = '블로그'
