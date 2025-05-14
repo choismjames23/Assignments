@@ -1,62 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>블로그 목록</h1>
-
-    <p style="text-align: right">
-        <a href="{% url 'blog:create' %}">새 글 생성</a>
-    </p>
-
+    <div class="mt-2">
+        <h1 class="d-inline">블로그 목록</h1>
+        <a href="{% url 'blog:create' %}" class="float-end btn btn-sm btn-primary">새 글 생성</a>
+    </div>
+    <hr>
     {% for blog in object_list %}
-        <p>
-            <a href="{% url 'blog:detail' blog.pk %}">
+        <div class="my-1">
+            <a href="{% url 'blog:detail' blog.pk %}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                 ({{ blog.id }}) [{{ blog.get_category_display }}]{{ blog.title }} - <span>{{ blog.author.username }}</span> (<small>{{ blog.created_at | date:"Y-m-d"}}</small>)
             </a>
-        </p>
+        </div>
     {% endfor %}
 
-    <form method="GET" style="margin-bottom: 10px">
-        <input name='q' type="text" placeholder="검색어를 입력하세요"
+    <form method="GET" class="my-3 d-flex">
+        <input name='q' type="text" placeholder="검색어를 입력하세요" class="form-control-sm"
                value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}">
-        <button>검색</button>
+        <button class="btn btn-sm btn-info ms-2">검색</button>
     </form>
 
-    <div>
-        {% if page_obj.has_previous %}
-            <a href="?page=1
-                        {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; 첫번째</a>
-            <a href="?page={{ page_obj.previous_page_number }}
-                        {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">이전</a>
-        {% endif %}
-
-{#        <span>#}
-{#            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}#}
-{#        </span>#}
-
-        {#...부분 표현 / 1 < 현재 페이지 -2 #}
-        {% if page_obj.number|add:-2 > 1 %}
-            <a href="?page={{ page_obj.number|add:-3 }}
-                        {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&hellip;</a>
-        {% endif %}
-
-        {% for i in page_obj.paginator.page_range %}
-            {% if page_obj.number == i %}
-                <span>현재 페이지</span>
-            {% elif i > page_obj.number|add:-3 and i < page_obj.number|add:3 %}
-                <a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ i }}</a>
-            {% endif %}
-        {% endfor %}
-
-        {#...부분 표현 / 현재 페이지 +2 < 최대 페이지 #}
-        {% if page_obj.paginator.num_pages > page_obj.number|add:2 %}
-            <a href="?page={{ page_obj.number|add:3 }}
-                        {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&hellip;</a>
-        {% endif %}
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}
-                        {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">다음</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}
-                        {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">마지막 &raquo;</a>
-        {% endif %}
-    </div>
+    {% include 'pagination.html' %}
 {% endblock %}

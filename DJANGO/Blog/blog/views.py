@@ -62,7 +62,7 @@ def blog_create(request):
 
 
     context = {'form':form}
-    return render(request, template_name='blog_create.html', context=context)
+    return render(request, template_name='blog_form.html', context=context)
 @login_required()
 def blog_update(request, pk):
     blog = get_object_or_404(Blog, pk=pk, author=request.user)
@@ -78,7 +78,7 @@ def blog_update(request, pk):
     context = {
         'form': form,
     }
-    return render(request, template_name='blog_update.html', context=context)
+    return render(request, template_name='blog_form.html', context=context)
 
 @login_required()
 @require_http_methods(['POST'])
