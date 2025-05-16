@@ -1,6 +1,7 @@
 from django.urls import path
 
 from blog import cb_views
+from blog import views
 
 app_name = 'blog'
 
@@ -13,6 +14,8 @@ urlpatterns = [
     path('<int:pk>/delete/', cb_views.BlogDeleteView.as_view(), name='delete'),
 
     path('comment/create/<int:blog_pk>/', cb_views.CommentCreateView.as_view(), name='comment_create'),
+    # FBV 이용 이미지 수정
+    # path('<int:pk>/update/', views.blog_update, name='update'),
 ]
 
 # include 하기 전 html 파일 -> {% url 'blog_list %}

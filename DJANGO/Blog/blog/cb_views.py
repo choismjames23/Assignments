@@ -6,7 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.db.models import Q
 
-from blog.forms import CommentForm
+from blog.forms import CommentForm, BlogForm
 from blog.models import Blog, Comment
 
 
@@ -80,7 +80,8 @@ class BlogDetailView(ListView):
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     template_name = 'blog_form.html'
-    fields = ('title', 'category', 'content')
+    # fields = ('title', 'category', 'content')
+    form_class = BlogForm
     # success_url = reverse_lazy('cb_blog_detail')
 
     def form_valid(self, form):
@@ -103,7 +104,8 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
     template_name = 'blog_form.html'
-    fields = ('title', 'category', 'content')
+    form_class = BlogForm
+    # fields = ('title', 'category', 'content')
     # 글쓴이와 로그인 한 사람이 같은지 확인하는 부분
     # 방법 1
     def get_queryset(self):
@@ -119,6 +121,9 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
     #          raise Http404
     #
     #     return self.object
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

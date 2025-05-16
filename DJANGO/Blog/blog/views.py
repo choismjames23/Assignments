@@ -65,13 +65,19 @@ def blog_create(request):
     return render(request, template_name='blog_form.html', context=context)
 @login_required()
 def blog_update(request, pk):
-    blog = get_object_or_404(Blog, pk=pk, author=request.user)
+    if request.user.is_superuser:
+        blog = get_object_or_404(Blog, pk=pk)
+    else:
+        blog = get_object_or_404(Blog, pk=pk, author=request.user)
+
     # if request.user != blog.author:
     #     raise Http404
 
     # form 안에 instance를 추가하여 기존에 있던 데이터를 함께 가져온다
-    form = BlogForm(request.POST or None, instance=blog)
+    # form = BlogForm(instance=blog)
+    form = BlogForm(request.POST or None, request.FILES or None, instance=blog)
     if form.is_valid():
+        print(form.cleaned_data)
         blog = form.save()
         return redirect(reverse('fb:detail', kwargs={'pk': blog.pk}))
 
