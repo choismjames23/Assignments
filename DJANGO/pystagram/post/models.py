@@ -1,5 +1,10 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from utils.models import TimestampModel
 
 User = get_user_model()
@@ -40,4 +45,26 @@ class Comment(TimestampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.post} | {self.user}'
+        return f'[comment] {self.post} | {self.user}'
+
+
+class Like(TimestampModel):
+    post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'[like] {self.post} | {self.user}'
+
+@receiver(post_save, sender=Post) # Post라는 모델이 save 된 이후에 @receiver 데코레이터 호출
+def post_post_save(sender, instance, created, **kwargs):
+    hashtags = re.findall(r'#(\w{1,100})(?=\s|$)', instance.content) # instance의 본문에 들어가는 내용이 #\w{1,100}(?=\s|$) 이래야 한다.
+    # #\w{1,100} => # 뒤에 1~100글자, (?=\s|$) 공백으로 구분 | 공백없이
+    instance.tags.clear()
+
+    if hashtags:
+        tags = [
+            Tag.objects.get_or_create(tag=hashtag)
+            for hashtag in hashtags
+        ]
+        tags = [ tag for tag, _ in tags ]
+        instance.tags.add(*tags)

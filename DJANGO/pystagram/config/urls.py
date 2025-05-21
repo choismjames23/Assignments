@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
 
 from member import views as member_views
@@ -31,12 +31,19 @@ urlpatterns = [
     path('create/', post_views.PostCreateView.as_view(), name='create'),
     path('<int:pk>/update/', post_views.PostUpdateView.as_view(), name='update'),
 
+    # like
+    path('like/', post_views.toggle_like, name='toggle_like'),
+
     # auth
     path('signup/', member_views.SignupView.as_view(), name='signup'),
     # path('signup/done/', TemplateView.as_view(template_name='auth/signup_done.html'), name='signup_done'),
     path('verify/', member_views.verify_email, name='verify_email'),
     path('login/', member_views.LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+
+    # include
+    path('comment/', include('post.comment_urls')),
+    path('profile/', include('member.urls'))
 ]
 
 if settings.DEBUG:
