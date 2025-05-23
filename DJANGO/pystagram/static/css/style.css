@@ -8,3 +8,8 @@ button.add-comment:hover {
     background-color: black !important;
     color: white;
 }
+
+.post-image {
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+        }

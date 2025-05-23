@@ -41,9 +41,13 @@ urlpatterns = [
     path('login/', member_views.LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
+    # search
+    path('search/', post_views.search, name='search'),
+
     # include
     path('comment/', include('post.comment_urls')),
-    path('profile/', include('member.urls'))
+    path('profile/', include('member.urls')),
+    path('oauth/', include('member.oauth_urls')),
 ]
 
 if settings.DEBUG:
