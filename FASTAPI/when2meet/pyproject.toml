@@ -12,12 +12,14 @@ uvicorn = "^0.34.2"
 orjson = "3.10.12"
 edgedb = "2.2.0"
 httpx = "0.28.1"
-tortoise-orm = {version = "0.23.0", extras = ["asyncmy"]}
 cryptography = "44.0.0"
 aerich = "0.8.1"
 tomlkit = "0.13.2"
 pydantic-settings = "2.7.1"
 
+[tool.poetry.dependencies.tortoise-orm]
+version = "0.23.0"
+extras = ["asyncmy"]
 
 [tool.poetry.group.dev.dependencies]
 black = "24.10.0"
@@ -26,10 +28,6 @@ mypy = "1.13.0"
 pytest = "8.3.4"
 coverage = "7.6.9"
 pytest-asyncio = "0.25.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 120
@@ -48,3 +46,13 @@ omit = ["*/test_*.py"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
+filterwarnings = ['ignore::DeprecationWarning']
+
+[tool.aerich]
+tortoise_orm = "app.configs.tortoise_config.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
