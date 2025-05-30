@@ -12,6 +12,11 @@ uvicorn = "^0.34.2"
 orjson = "3.10.12"
 edgedb = "2.2.0"
 httpx = "0.28.1"
+tortoise-orm = {version = "0.23.0", extras = ["asyncmy"]}
+cryptography = "44.0.0"
+aerich = "0.8.1"
+tomlkit = "0.13.2"
+pydantic-settings = "2.7.1"
 
 
 [tool.poetry.group.dev.dependencies]
