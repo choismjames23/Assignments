@@ -1,8 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from starlette.status import HTTP_404_NOT_FOUND
 
 from app.dtos.create_meeting_response import CreateMeetingResponse
 from app.dtos.get_meeting_response import GetMeetingResponse
-from app.services.meeting_service_edgedb import service_create_meeting_edgedb
+from app.services.meeting_service_edgedb import (
+    service_create_meeting_edgedb,
+    service_get_meeting_edgedb,
+)
 from app.services.meeting_services_mysql import service_create_meeting_mysql
 
 edgedb_router = APIRouter(prefix="/v1/edgedb/meetings", tags=["Meeting"], redirect_slashes=False)
@@ -26,7 +30,12 @@ async def api_create_meeting_mysql() -> CreateMeetingResponse:
     description="meeting을 조회합니다.",
 )
 async def api_get_meeting_edgedb(meeting_url_code: str) -> GetMeetingResponse:
-    return GetMeetingResponse(url_code="abc")
+    meeting = await service_get_meeting_edgedb(meeting_url_code)
+    if meeting is None:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND, detail=f"meeting with url_code: {meeting_url_code} not found"
+        )
+    return GetMeetingResponse(url_code=meeting_url_code)
 
 
 @mysql_router.get(
